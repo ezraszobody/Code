@@ -1,5 +1,5 @@
 body {
-    background: #e48cff;
+    background: #fae9ff;
 }
 #navbar-icon {
     border-color: #4a008f;
@@ -46,13 +46,13 @@ body {
 }
 
 .navbar.scrolled {
-    background: #e48cff;
+    background: black;
     transition: background 500ms;
 }
 
 .gallery{
-    padding-top: 5em;
-    padding-bottom: 2em;
+    padding-top: 100px;
+    padding-bottom: 32px;
     color: white;
 }
 
@@ -66,6 +66,28 @@ body {
 }
 
 .galleryRow {
-    padding-left: 3em;
-    padding-right: 3em;
+    padding-left: 48px;
+    padding-right: 48px;
+}
+
+.card {
+    display: flex;
+    flex: 2;
+    min-width: 250px;
+    flex-grow: 1;
+    margin: 10px;
+    box-shadow: 5px 5px 10px rgb(56, 56, 56);
+}
+
+.card a {
+    text-decoration: none;
+    color: #000000;
+    border: 3px solid #000000;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.card a:hover {
+    box-shadow: 2px 2px 6px rgb(56, 56, 56);
+    transition: 100ms;
 }
