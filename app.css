@@ -4,7 +4,7 @@ body {
 #navbar-icon {
     border-color: #4a008f;
     border-width: .1em;
-    color: #4a008f;
+    color: #4a008f !important;
 }
 
 #main-navbar .nav-link {
