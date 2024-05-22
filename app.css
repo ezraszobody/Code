@@ -25,10 +25,8 @@ body {
 }
 
 
-#title {
-    color:#c71778;
-    margin-right: .2em;
-    font-weight: 200;
+.main-logo {
+    height: 6em;
 }
 
 .titles {
@@ -52,3 +50,22 @@ body {
     transition: background 500ms;
 }
 
+.gallery{
+    padding-top: 5em;
+    padding-bottom: 2em;
+    color: white;
+}
+
+.galleryHeading {
+    font-weight: 200;
+}
+
+.galleryHeading span {
+    font-weight: normal;
+    color: #c71778;
+}
+
+.galleryRow {
+    padding-left: 3em;
+    padding-right: 3em;
+}
