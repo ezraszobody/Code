@@ -23,3 +23,14 @@ const maxViews = views.reduce((max, view) => {
 
 // above is how to get the video with max views,
 // the same can be done with the min by flipping the > to a <
+
+function rollDie(numSides = 6) {
+    return Math.floor(Math.random() * numSides) + 1
+}
+
+//  Default params to roll die that defaults to 6
+
+const maxVIEWS = Math.max(...views);
+
+// above is a MUCH EASIER way to get the video with max views
+// the same can be done with Math.min()
