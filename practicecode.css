@@ -1,0 +1,47 @@
+body {
+    background: #e48cff;
+}
+#navbar-icon {
+    border-color: #4a008f;
+    border-width: .1em;
+    color: #4a008f;
+}
+
+#main-navbar .nav-link {
+    font-weight: 150;
+    color: #4a008f;
+}
+
+#main-navbar .nav-link:hover {
+    font-weight: 400;
+    color: #c71778;
+}
+
+
+#title {
+    color:#c71778;
+    margin-right: .2em;
+    font-weight: 200;
+}
+
+.titles {
+    font-weight: 100;
+}
+
+.titles span {
+    color: #c71778;
+    font-weight: normal;
+}
+
+.main-text {
+    background-color: #ff9dcb;
+    color: #4a008f;
+    font-weight: 200;
+    padding: 10em;
+}
+
+.navbar.scrolled {
+    background: #e48cff;
+    transition: background 500ms;
+}
+
