@@ -1,4 +1,30 @@
-const views = [134, 86730, 1290, 13]
+// REMEMBER: OBJECTS USE {}
+// REMEMBER: ARRAYS USE []
+
+const views = [134, 86730, 1290, 13, 10, 15, 39, 68]
+
+const ezra = {
+    email: 'kids@szobody.com',
+    firstName: 'Ezra',
+    lastName: 'Szobody',
+    born: '2011',
+    died: 'N/A',
+    city: 'Asheville',
+    state: 'North Carolina'
+}
+
+const { email, firstName, lastName, born, died, city, state } = ezra;
+
+// example of destructuring an object
+
+
+function sum(...nums) {
+    return nums.reduce((total, el) => total + el)
+}
+
+//basic sum function using reduce and rest (...)
+
+
 
 const total = views.reduce((total, view) => {
     return total + view;
@@ -34,3 +60,4 @@ const maxVIEWS = Math.max(...views);
 
 // above is a MUCH EASIER way to get the video with max views
 // the same can be done with Math.min()
+
