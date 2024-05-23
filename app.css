@@ -94,10 +94,6 @@ body {
     fill: #4a008f;
 }
 
-.mainIMG {
-    box-shadow: 5px 5px 16px black;
-}
-
 .downIcon {
     width: 20px
 }
@@ -124,4 +120,12 @@ body {
     fill: white;
     display: flex; 
     justify-content: right;
+}
+
+.titleTop {
+    padding-top: 100px;
+}
+
+.titleBottom {
+    padding-bottom: 20px;
 }
