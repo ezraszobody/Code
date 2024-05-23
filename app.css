@@ -110,7 +110,9 @@ body {
     border: 2px solid black; 
     padding: 8px;
     border-radius: 150px;
-    margin-left: 54px;
+    display: flex;
+    justify-content: right;
+    width: 50px;
 }
 
 .heartLink:hover {
@@ -120,4 +122,6 @@ body {
 
 .heartIcon:hover {
     fill: white;
+    display: flex; 
+    justify-content: right;
 }
