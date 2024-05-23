@@ -83,13 +83,9 @@ body {
 .card a {
     text-decoration: none;
     color: #000000;
-    border: 3px solid #000000;
-    padding: 5px;
-    border-radius: 10px;
 }
 
 .card a:hover {
-    box-shadow: 2px 2px 6px rgb(56, 56, 56);
     transition: 100ms;
 }
 
@@ -100,4 +96,28 @@ body {
 
 .mainIMG {
     box-shadow: 5px 5px 16px black;
+}
+
+.downIcon {
+    width: 20px
+}
+
+.heartIcon {
+    width: 30px;
+}
+
+.heartLink {
+    border: 2px solid black; 
+    padding: 8px;
+    border-radius: 150px;
+    margin-left: 54px;
+}
+
+.heartLink:hover {
+    background-color: black;
+
+}
+
+.heartIcon:hover {
+    fill: white;
 }
