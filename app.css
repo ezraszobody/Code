@@ -111,12 +111,12 @@ body {
     width: 50px;
 }
 
-.heartLink:hover {
+.heartLink:focus {
     background-color: black;
 
 }
 
-.heartIcon:hover {
+.heartLink:focus .heartIcon {
     fill: white;
     display: flex; 
     justify-content: right;
