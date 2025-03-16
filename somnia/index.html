@@ -3,139 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Album Style Transfer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-        #canvas {
-            border: 2px solid #000;
-            margin-top: 20px;
-            max-width: 100%;
-            transition: transform 1.5s ease, opacity 1.5s ease;
-        }
-    </style>
+    <title>Image Mashup</title>
 </head>
 <body>
-    <h1>Album Style Transfer</h1>
-    <input type="file" id="image1" accept="image/*" placeholder="Base Album">
-    <input type="file" id="image2" accept="image/*" placeholder="Style Album">
-    <button onclick="startAnimation()">Transfer Style!</button>
-    <br>
-    <canvas id="canvas" width="600" height="600"></canvas>
-    <br>
-    <button id="download" style="display:none;" onclick="downloadImage()">Download Art</button>
+    <h1>Image Mashup</h1>
+
+    <input type="file" id="image1" accept="image/*" />
+    <input type="file" id="image2" accept="image/*" />
+    <button onclick="mashupImages()">Mashup Images</button>
+
+    <canvas id="canvas" style="border:1px solid black; margin-top: 20px;"></canvas>
 
     <script>
-        function startAnimation() {
-            const canvas = document.getElementById('canvas');
-            canvas.style.transform = 'scale(0.5)';
-            canvas.style.opacity = '0';
+        function mashupImages() {
+            const image1File = document.getElementById("image1").files[0];
+            const image2File = document.getElementById("image2").files[0];
 
-            setTimeout(() => {
-                transferStyle();
-                canvas.style.transform = 'scale(1)';
-                canvas.style.opacity = '1';
-            }, 1500);
-        }
-
-        function transferStyle() {
-            const img1Input = document.getElementById('image1').files[0];
-            const img2Input = document.getElementById('image2').files[0];
-            if (!img1Input || !img2Input) {
-                alert('Please upload both album covers!');
+            if (!image1File || !image2File) {
+                alert("Please upload both images.");
                 return;
             }
-
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
 
             const img1 = new Image();
             const img2 = new Image();
 
-            img1.onload = () => {
-                img2.onload = () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
 
-                    // Apply style transfer effects
-                    applyStyleTransfer(ctx, img1, img2, canvas);
+            // Load the first image
+            img1.onload = function() {
+                // Load the second image
+                img2.onload = function() {
+                    // Set canvas size based on image size
+                    canvas.width = img1.width;
+                    canvas.height = img1.height;
 
-                    // Show the download button
-                    document.getElementById('download').style.display = 'inline';
+                    // Draw the first image (top layer)
+                    ctx.drawImage(img1, 0, 0);
+
+                    // Add the peeling effect
+                    let x = 0;
+                    let interval = setInterval(function() {
+                        ctx.clearRect(x, 0, 10, canvas.height);
+                        ctx.drawImage(img2, 0, 0);
+                        ctx.fillStyle = "white";
+                        ctx.fillRect(x, 0, 10, canvas.height); // Simulating the "peel"
+                        x += 10;
+
+                        if (x > canvas.width) {
+                            clearInterval(interval);
+                        }
+                    }, 30);
                 };
-                img2.src = URL.createObjectURL(img2Input);
+                img2.src = URL.createObjectURL(image2File);
             };
-            img1.src = URL.createObjectURL(img1Input);
+            img1.src = URL.createObjectURL(image1File);
         }
-
-        function downloadImage() {
-            const canvas = document.getElementById('canvas');
-            const link = document.createElement('a');
-            link.download = 'styled_album_art.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        }
-
-        function applyStyleTransfer(ctx, img1, img2, canvas) {
-            // Apply base album as the main image
-            ctx.drawImage(img1, 0, 0, canvas.width, canvas.height);
-
-            // Randomize different style effects from style album
-            const styleEffects = [
-                overlayStyle, textureBlend, gradientMap, patternOverlay, grainyEffect
-            ];
-
-            const chosenEffect = styleEffects[Math.floor(Math.random() * styleEffects.length)];
-            chosenEffect(ctx, img1, img2, canvas);
-        }
-
-        function overlayStyle(ctx, img1, img2, canvas) {
-            ctx.globalAlpha = 0.4;
-            ctx.drawImage(img2, 0, 0, canvas.width, canvas.height);
-            ctx.globalAlpha = 1;
-        }
-
-        function textureBlend(ctx, img1, img2, canvas) {
-            ctx.globalCompositeOperation = 'multiply';
-            ctx.drawImage(img2, 0, 0, canvas.width, canvas.height);
-            ctx.globalCompositeOperation = 'source-over';
-        }
-
-        function gradientMap(ctx, img1, img2, canvas) {
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, 'rgba(255,0,0,0.3)');
-            gradient.addColorStop(1, 'rgba(0,0,255,0.3)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-
-        function patternOverlay(ctx, img1, img2, canvas) {
-            const patternCanvas = document.createElement('canvas');
-            patternCanvas.width = canvas.width / 4;
-            patternCanvas.height = canvas.height / 4;
-            const patternCtx = patternCanvas.getContext('2d');
-            patternCtx.drawImage(img2, 0, 0, patternCanvas.width, patternCanvas.height);
-
-            const pattern = ctx.createPattern(patternCanvas, 'repeat');
-            ctx.fillStyle = pattern;
-            ctx.globalAlpha = 0.5;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.globalAlpha = 1;
-        }
-
-        function grainyEffect(ctx, img1, img2, canvas) {
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < imageData.data.length; i += 4) {
-                const grain = Math.random() * 50 - 25;
-                imageData.data[i] += grain;     // Red
-                imageData.data[i + 1] += grain; // Green
-                imageData.data[i + 2] += grain; // Blue
-            }
-            ctx.putImageData(imageData, 0, 0);
-        }
-
     </script>
 </body>
 </html>
