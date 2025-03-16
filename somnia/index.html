@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Filter App</title>
+    <title>Image Silhouette App</title>
     <style>
         #canvas {
             border: 1px solid #000;
@@ -14,14 +14,8 @@
     </style>
 </head>
 <body>
-    <h1>Image Filter App</h1>
+    <h1>Image Silhouette App</h1>
     <input type="file" id="imageUpload" accept="image/*">
-    <br>
-    <select id="filterSelect">
-        <option value="none">Select Filter</option>
-        <option value="bw">Black and White</option>
-        <option value="washed">Washed Out & Blurry</option>
-    </select>
     <br>
     <canvas id="canvas"></canvas>
 
@@ -29,7 +23,6 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const imageUpload = document.getElementById('imageUpload');
-        const filterSelect = document.getElementById('filterSelect');
         let img = new Image();
 
         // Handle image upload
@@ -50,57 +43,39 @@
             ctx.drawImage(img, 0, 0); // Draw the image on the canvas
         };
 
-        // Function for black and white filter
-        function applyBlackAndWhite() {
+        // Function to apply silhouette effect
+        function applySilhouette() {
             const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const data = imgData.data;
+            const threshold = 128; // Set the brightness threshold for silhouette (can adjust this value)
 
             for (let i = 0; i < data.length; i += 4) {
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];
-                const avg = (r + g + b) / 3;
-                data[i] = avg;  // Red
-                data[i + 1] = avg;  // Green
-                data[i + 2] = avg;  // Blue
+
+                // Calculate brightness using the luminance formula
+                const brightness = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+                // If brightness is less than the threshold, make the pixel black, otherwise make it white
+                const color = brightness < threshold ? 0 : 255;
+
+                data[i] = color;     // Red
+                data[i + 1] = color; // Green
+                data[i + 2] = color; // Blue
             }
 
-            ctx.putImageData(imgData, 0, 0);
+            ctx.putImageData(imgData, 0, 0); // Update the canvas with the silhouette effect
         }
 
-        // Function for washed-out and blurry filter
-        function applyWashedOutAndBlurry() {
-            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imgData.data;
-
-            // Apply washed-out effect (by desaturating and lightening colors)
-            for (let i = 0; i < data.length; i += 4) {
-                data[i] = data[i] * 0.8;    // Red
-                data[i + 1] = data[i + 1] * 0.8; // Green
-                data[i + 2] = data[i + 2] * 0.8; // Blue
-            }
-
-            ctx.putImageData(imgData, 0, 0);
-
-            // Apply slight blur using a basic box blur (not a real blur, just a simple approach)
-            ctx.globalAlpha = 0.5; // Make the blur semi-transparent
-            ctx.filter = 'blur(2px)'; // Apply blur
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            ctx.filter = 'none'; // Reset filter
-        }
-
-        // Apply selected filter
-        filterSelect.addEventListener('change', (e) => {
-            const filter = e.target.value;
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas before applying new filter
-
-            if (filter === 'bw') {
-                applyBlackAndWhite();
-            } else if (filter === 'washed') {
-                applyWashedOutAndBlurry();
-            } else {
-                ctx.drawImage(img, 0, 0); // Draw the original image if no filter is selected
-            }
+        // Apply silhouette effect when image is loaded
+        imageUpload.addEventListener('change', () => {
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0); // Draw the image on the canvas
+                applySilhouette(); // Apply the silhouette effect
+            };
         });
     </script>
 </body>
