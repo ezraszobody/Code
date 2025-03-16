@@ -24,6 +24,8 @@
     <button onclick="randomizeImages()">Randomize!</button>
     <br>
     <canvas id="canvas" width="600" height="600"></canvas>
+    <br>
+    <button id="download" style="display:none;" onclick="downloadImage()">Download Art</button>
 
     <script>
         function randomizeImages() {
@@ -44,34 +46,42 @@
                 img2.onload = () => {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                    // Randomly pick a mashup effect
-                    const effects = [blendImages, glitchEffect, sliceMashup, tintEffect];
-                    const chosenEffect = effects[Math.floor(Math.random() * effects.length)];
+                    // List of all mashup effects
+                    const effects = [
+                        blendImages, glitchEffect, sliceMashup, tintEffect,
+                        pixelShift, rgbSplit
+                    ];
 
+                    const chosenEffect = effects[Math.floor(Math.random() * effects.length)];
                     chosenEffect(ctx, img1, img2, canvas);
+
+                    // Show the download button
+                    document.getElementById('download').style.display = 'inline';
                 };
                 img2.src = URL.createObjectURL(img2Input);
             };
             img1.src = URL.createObjectURL(img1Input);
         }
 
-        // 1. Blending Images
+        function downloadImage() {
+            const canvas = document.getElementById('canvas');
+            const link = document.createElement('a');
+            link.download = 'randomized_album_art.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
         function blendImages(ctx, img1, img2, canvas) {
             const blendModes = ['multiply', 'screen', 'overlay', 'difference', 'lighten', 'darken'];
-
             ctx.globalAlpha = 0.7;
             ctx.drawImage(img1, 0, 0, canvas.width, canvas.height);
-
             ctx.globalCompositeOperation = blendModes[Math.floor(Math.random() * blendModes.length)];
             ctx.drawImage(img2, 0, 0, canvas.width, canvas.height);
-
             ctx.globalCompositeOperation = 'source-over';
         }
 
-        // 2. Glitch Effect
         function glitchEffect(ctx, img1, img2, canvas) {
             ctx.drawImage(img1, 0, 0, canvas.width, canvas.height);
-
             for (let i = 0; i < 10; i++) {
                 const x = Math.random() * canvas.width;
                 const y = Math.random() * canvas.height;
@@ -81,30 +91,42 @@
             }
         }
 
-        // 3. Slice Mashup
         function sliceMashup(ctx, img1, img2, canvas) {
             const sliceCount = 5 + Math.floor(Math.random() * 5);
             const sliceHeight = canvas.height / sliceCount;
-
             for (let i = 0; i < sliceCount; i++) {
                 const img = i % 2 === 0 ? img1 : img2;
                 ctx.drawImage(img, 0, i * sliceHeight, canvas.width, sliceHeight, 0, i * sliceHeight, canvas.width, sliceHeight);
             }
         }
 
-        // 4. Tint Effect
         function tintEffect(ctx, img1, img2, canvas) {
             ctx.drawImage(img1, 0, 0, canvas.width, canvas.height);
-
             const randomColor = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`;
             ctx.fillStyle = randomColor;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             ctx.globalCompositeOperation = 'lighter';
             ctx.drawImage(img2, 0, 0, canvas.width, canvas.height);
-
             ctx.globalCompositeOperation = 'source-over';
         }
+
+        function pixelShift(ctx, img1, img2, canvas) {
+            ctx.drawImage(img1, 0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < 20; i++) {
+                const y = Math.random() * canvas.height;
+                const height = 5 + Math.random() * 20;
+                ctx.drawImage(img2, 0, y, canvas.width, height, Math.random() * 10, y, canvas.width, height);
+            }
+        }
+
+        function rgbSplit(ctx, img1, img2, canvas) {
+            ctx.drawImage(img1, 0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.drawImage(img2, 5, 0, canvas.width, canvas.height);
+            ctx.drawImage(img2, -5, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
     </script>
 </body>
 </html>
