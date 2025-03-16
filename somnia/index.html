@@ -3,61 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Mashup</title>
+    <title>Image Filter App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+        select, input[type="file"], button {
+            margin-bottom: 10px;
+        }
+        #output {
+            max-width: 100%;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Image Mashup</h1>
+    <h1>Image Filter App</h1>
 
-    <input type="file" id="image1" accept="image/*" />
-    <input type="file" id="image2" accept="image/*" />
-    <button onclick="mashupImages()">Mashup Images</button>
+    <!-- Image Upload -->
+    <input type="file" id="imageInput" accept="image/*">
+    
+    <!-- Dropdown for selecting filters -->
+    <select id="filterSelect">
+        <option value="none">Select Filter</option>
+        <option value="bw">Black & White</option>
+        <option value="fire">Fire Overlay</option>
+        <option value="cracked">Cracked Screen</option>
+        <option value="icy">Icy Effect</option>
+        <option value="watery">Watery Effect</option>
+        <option value="smoke">Smoke Overlay</option>
+    </select>
 
-    <canvas id="canvas" style="border:1px solid black; margin-top: 20px;"></canvas>
+    <!-- Canvas to show the image -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Fire and Smoke Overlays -->
+    <div id="fireOverlay" class="overlay" style="background-image: url('fire.png'); display: none;"></div>
+    <div id="smokeOverlay" class="overlay" style="background-image: url('smoke.png'); display: none;"></div>
 
     <script>
-        function mashupImages() {
-            const image1File = document.getElementById("image1").files[0];
-            const image2File = document.getElementById("image2").files[0];
+        const imageInput = document.getElementById('imageInput');
+        const filterSelect = document.getElementById('filterSelect');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let img = new Image();
 
-            if (!image1File || !image2File) {
-                alert("Please upload both images.");
-                return;
-            }
+        // Function to handle image upload
+        imageInput.addEventListener('change', handleImage);
 
-            const img1 = new Image();
-            const img2 = new Image();
-
-            const canvas = document.getElementById("canvas");
-            const ctx = canvas.getContext("2d");
-
-            // Load the first image
-            img1.onload = function() {
-                // Load the second image
-                img2.onload = function() {
-                    // Set canvas size based on image size
-                    canvas.width = img1.width;
-                    canvas.height = img1.height;
-
-                    // Draw the first image (top layer)
-                    ctx.drawImage(img1, 0, 0);
-
-                    // Create the ripped effect by clearing the center
-                    const ripWidth = 100; // Width of the ripped section
-                    const ripHeight = img1.height; // Full height of the canvas
-                    const ripX = (canvas.width - ripWidth) / 2; // Center the rip
-
-                    // Draw the second image in the ripped section
-                    ctx.drawImage(img2, ripX, 0, ripWidth, ripHeight);
-
-                    // Optionally, you can add a rough edge around the ripped section for effect:
-                    ctx.lineWidth = 5;
-                    ctx.strokeStyle = "black";
-                    ctx.setLineDash([10, 5]);
-                    ctx.strokeRect(ripX, 0, ripWidth, ripHeight);
+        function handleImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                img.onload = function() {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous images
+                    ctx.drawImage(img, 0, 0);
                 };
-                img2.src = URL.createObjectURL(image2File);
             };
-            img1.src = URL.createObjectURL(image1File);
+            reader.readAsDataURL(file);
+        }
+
+        // Function to apply the selected filter
+        filterSelect.addEventListener('change', applyFilter);
+
+        function applyFilter() {
+            const filter = filterSelect.value;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas before applying a new filter
+            ctx.drawImage(img, 0, 0); // Redraw the original image
+
+            switch (filter) {
+                case 'bw':
+                    // Black & White filter using CSS filter
+                    canvas.style.filter = 'grayscale(100%)';
+                    break;
+                case 'fire':
+                    // Fire overlay - you would have a fire image as a PNG
+                    document.getElementById('fireOverlay').style.display = 'block';
+                    break;
+                case 'cracked':
+                    // Cracked Screen effect
+                    const crackedCanvas = document.createElement('canvas');
+                    const crackedCtx = crackedCanvas.getContext('2d');
+                    crackedCanvas.width = canvas.width;
+                    crackedCanvas.height = canvas.height;
+                    crackedCtx.drawImage(img, 0, 0);
+                    crackedCtx.globalCompositeOperation = 'difference'; // Create a cracked look
+                    crackedCtx.fillStyle = 'rgba(0,0,0,0.6)';
+                    crackedCtx.fillRect(0, 0, canvas.width, canvas.height); // Add black "cracks" effect
+                    ctx.drawImage(crackedCanvas, 0, 0);
+                    break;
+                case 'icy':
+                    // Icy effect using a blue overlay
+                    ctx.globalAlpha = 0.5; // Semi-transparent blue overlay for icy effect
+                    ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.globalAlpha = 1;
+                    break;
+                case 'watery':
+                    // Watery effect using a wavy distortion (this is just a placeholder effect)
+                    ctx.globalAlpha = 0.4;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.globalAlpha = 1;
+                    break;
+                case 'smoke':
+                    // Smoke overlay - you would have a smoke image as a PNG
+                    document.getElementById('smokeOverlay').style.display = 'block';
+                    break;
+                default:
+                    canvas.style.filter = 'none';
+                    document.getElementById('fireOverlay').style.display = 'none';
+                    document.getElementById('smokeOverlay').style.display = 'none';
+                    break;
+            }
         }
     </script>
 </body>
