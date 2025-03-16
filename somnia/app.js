@@ -1,63 +1,40 @@
-// REMEMBER: OBJECTS USE {}
-// REMEMBER: ARRAYS USE []
+import { useState } from 'react';
+import { Button, Card, CardContent, Input, Textarea } from '@/components/ui';
 
-const views = [134, 86730, 1290, 13, 10, 15, 39, 68]
+export default function ChatApp() {
+  const [posts, setPosts] = useState([]);
+  const [newPost, setNewPost] = useState('');
 
-const ezra = {
-    email: 'kids@szobody.com',
-    firstName: 'Ezra',
-    lastName: 'Szobody',
-    born: '2011',
-    died: 'N/A',
-    city: 'Asheville',
-    state: 'North Carolina'
-}
-
-const { email, firstName, lastName, born, died, city, state } = ezra;
-
-// example of destructuring an object
-
-
-function sum(...nums) {
-    return nums.reduce((total, el) => total + el)
-}
-
-//basic sum function using reduce and rest (...)
-
-
-
-const total = views.reduce((total, view) => {
-    return total + view;
-})
-
-// Above is how to get the total of views using a reduce function
-
-// let total = 0
-// for (let view of views) {
-//     total += price
-// }
-// console.log(total)
-
-// above is how to get the total using a different way
-
-const maxViews = views.reduce((max, view) => {
-    if(view > max) {
-        return view;
+  const handlePost = () => {
+    if (newPost.trim() !== '') {
+      setPosts([{ id: Date.now(), content: newPost }, ...posts]);
+      setNewPost('');
     }
-    return max; 
-})
+  };
 
-// above is how to get the video with max views,
-// the same can be done with the min by flipping the > to a <
+  return (
+    <div className="p-8 max-w-2xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Chat Board</h1>
 
-function rollDie(numSides = 6) {
-    return Math.floor(Math.random() * numSides) + 1
+      <Card className="mb-6">
+        <CardContent>
+          <Textarea
+            value={newPost}
+            onChange={(e) => setNewPost(e.target.value)}
+            placeholder="What's on your mind?"
+            className="mb-4"
+          />
+          <Button onClick={handlePost}>Post</Button>
+        </CardContent>
+      </Card>
+
+      {posts.map((post) => (
+        <Card key={post.id} className="mb-4">
+          <CardContent>
+            <p>{post.content}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
 }
-
-//  Default params to roll die that defaults to 6
-
-const maxVIEWS = Math.max(...views);
-
-// above is a MUCH EASIER way to get the video with max views
-// the same can be done with Math.min()
-
