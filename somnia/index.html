@@ -1,106 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Board with Profiles</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        textarea, input {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 8px 16px;
-            cursor: pointer;
-        }
-        .post {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-        }
-        .profile-pic {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            object-fit: cover;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Texting Website</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <h1>Chat Board with Profiles</h1>
-
-    <h2>Create Your Profile</h2>
-    <input type="text" id="username" placeholder="Enter your username" />
-    <input type="file" id="profilePic" accept="image/*" />
-
-    <h2>New Post</h2>
-    <textarea id="postInput" placeholder="What's on your mind?"></textarea>
-    <button onclick="addPost()">Post</button>
-
-    <div id="posts"></div>
-
-    <script>
-        let userProfile = {
-            username: '',
-            profilePic: ''
-        };
-
-        // Capture user profile details
-        document.getElementById('username').addEventListener('input', (e) => {
-            userProfile.username = e.target.value;
-        });
-
-        document.getElementById('profilePic').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    userProfile.profilePic = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function addPost() {
-            const input = document.getElementById('postInput');
-            const postContent = input.value.trim();
-
-            if (postContent && userProfile.username) {
-                const postContainer = document.getElementById('posts');
-                const postElement = document.createElement('div');
-                postElement.className = 'post';
-
-                const profileImg = document.createElement('img');
-                profileImg.className = 'profile-pic';
-                profileImg.src = userProfile.profilePic || 'https://via.placeholder.com/40';
-
-                const postText = document.createElement('div');
-                postText.innerHTML = `<strong>${userProfile.username}</strong><br>${postContent}`;
-
-                postElement.appendChild(profileImg);
-                postElement.appendChild(postText);
-
-                postContainer.insertBefore(postElement, postContainer.firstChild);
-
-                input.value = ''; // Clear the input
-            } else {
-                alert('Please enter a username and post content.');
-            }
-        }
-    </script>
-
+  <div class="container">
+    <div class="account" id="account1">
+      <div class="profile">
+        <img id="profile1" src="default.jpg" alt="Profile Picture">
+        <input type="file" id="upload1" accept="image/*">
+      </div>
+      <div class="messages" id="messages1"></div>
+      <textarea id="message1" placeholder="Type a message..."></textarea>
+      <button onclick="sendMessage(1)">Send</button>
+    </div>
+    <div class="account" id="account2">
+      <div class="profile">
+        <img id="profile2" src="default.jpg" alt="Profile Picture">
+        <input type="file" id="upload2" accept="image/*">
+      </div>
+      <div class="messages" id="messages2"></div>
+      <textarea id="message2" placeholder="Type a message..."></textarea>
+      <button onclick="sendMessage(2)">Send</button>
+    </div>
+    <div class="account" id="account3">
+      <div class="profile">
+        <img id="profile3" src="default.jpg" alt="Profile Picture">
+        <input type="file" id="upload3" accept="image/*">
+      </div>
+      <div class="messages" id="messages3"></div>
+      <textarea id="message3" placeholder="Type a message..."></textarea>
+      <button onclick="sendMessage(3)">Send</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>

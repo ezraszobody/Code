@@ -1,40 +1,32 @@
-import { useState } from 'react';
-import { Button, Card, CardContent, Input, Textarea } from '@/components/ui';
+// Function to handle the image upload
+function handleImageUpload(accountNumber) {
+  const uploadInput = document.getElementById(`upload${accountNumber}`);
+  const profileImg = document.getElementById(`profile${accountNumber}`);
 
-export default function ChatApp() {
-  const [posts, setPosts] = useState([]);
-  const [newPost, setNewPost] = useState('');
+  uploadInput.addEventListener('change', function(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      profileImg.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  });
+}
 
-  const handlePost = () => {
-    if (newPost.trim() !== '') {
-      setPosts([{ id: Date.now(), content: newPost }, ...posts]);
-      setNewPost('');
-    }
-  };
+// Call the function for each account's upload button
+handleImageUpload(1);
+handleImageUpload(2);
+handleImageUpload(3);
 
-  return (
-    <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Chat Board</h1>
+// Function to send a message
+function sendMessage(accountNumber) {
+  const messageInput = document.getElementById(`message${accountNumber}`);
+  const messagesDiv = document.getElementById(`messages${accountNumber}`);
 
-      <Card className="mb-6">
-        <CardContent>
-          <Textarea
-            value={newPost}
-            onChange={(e) => setNewPost(e.target.value)}
-            placeholder="What's on your mind?"
-            className="mb-4"
-          />
-          <Button onClick={handlePost}>Post</Button>
-        </CardContent>
-      </Card>
-
-      {posts.map((post) => (
-        <Card key={post.id} className="mb-4">
-          <CardContent>
-            <p>{post.content}</p>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
+  if (messageInput.value.trim() !== "") {
+    const message = document.createElement('div');
+    message.textContent = messageInput.value;
+    messagesDiv.appendChild(message);
+    messageInput.value = ""; // Clear the message input
+    messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the latest message
+  }
 }
