@@ -41,19 +41,19 @@
                     // Draw the first image (top layer)
                     ctx.drawImage(img1, 0, 0);
 
-                    // Add the peeling effect
-                    let x = 0;
-                    let interval = setInterval(function() {
-                        ctx.clearRect(x, 0, 10, canvas.height);
-                        ctx.drawImage(img2, 0, 0);
-                        ctx.fillStyle = "white";
-                        ctx.fillRect(x, 0, 10, canvas.height); // Simulating the "peel"
-                        x += 10;
+                    // Create the ripped effect by clearing the center
+                    const ripWidth = 100; // Width of the ripped section
+                    const ripHeight = img1.height; // Full height of the canvas
+                    const ripX = (canvas.width - ripWidth) / 2; // Center the rip
 
-                        if (x > canvas.width) {
-                            clearInterval(interval);
-                        }
-                    }, 30);
+                    // Draw the second image in the ripped section
+                    ctx.drawImage(img2, ripX, 0, ripWidth, ripHeight);
+
+                    // Optionally, you can add a rough edge around the ripped section for effect:
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "black";
+                    ctx.setLineDash([10, 5]);
+                    ctx.strokeRect(ripX, 0, ripWidth, ripHeight);
                 };
                 img2.src = URL.createObjectURL(image2File);
             };
