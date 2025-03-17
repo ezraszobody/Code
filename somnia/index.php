@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<?php
+session_start()
+$posts = $_SESSION['posts'] ?? []
+?>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,6 +11,20 @@
 </head>
 <body>
     <h1>Let's do some texting!</h1>
+    <h2>Messages</h2>
+<?php if (!empty($posts)): ?>
+    <?php foreach ($posts as $post): ?>
+        <div>
+            <img src="<?php echo $post['profile_pic']; ?>" alt="Profile Picture" width="50">
+            <strong><?php echo htmlspecialchars($post['username']); ?></strong>
+            <p><?php echo htmlspecialchars($post['message']); ?></p>
+            <small><?php echo $post['timestamp']; ?></small>
+        </div>
+        <hr>
+    <?php endforeach; ?>
+<?php else: ?>
+    <p>No messages yet. Be the first to post!</p>
+<?php endif; ?>
 <form action="process.php" method="POST" enctype="multipart/form-data">
 <label for="usernme">Username</label>
 <input type="text" id="username" name="username" required>
